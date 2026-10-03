@@ -103,7 +103,12 @@
 		</figure>
 
 		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>For Bezier surfaces, I extended the 1D de Casteljau algorithm by applying it in two directions. I first evaluated each row of control points at <i>u</i>, which gives us one point for each row. I then treated these points as a new Bezier curve and evaluated it at <i>v</i> to get the final point on the surface.</p>
+		<p>I used the same <code>evaluateStep()</code> idea from Part 1, but with 3D points. I used linear interpolation on each pair of neighboring points and repeated the process in <code>evaluated1D()</code> until there was only one point left. For <code>evaluate()</code>, I first evaluated each row using <i>u</i>, then used those resulting points to evaluate the surface using <i>v</i>.</p>
+		<figure>
+			<img src="assets/part2_teapot.png" style="width: 70%"/>
+			<figcaption>Teapot evaluated using separable 1D de Casteljau.</figcaption>
+		</figure>
 
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
