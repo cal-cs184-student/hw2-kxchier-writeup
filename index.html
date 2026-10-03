@@ -23,6 +23,22 @@
 			body {
 				font-family: 'Inter', sans-serif;
 			}
+
+			table {
+				max-width: 100%;
+				table-layout: fixed;
+			}
+
+			td {
+				width: 50%;
+				padding: 10px;
+				box-sizing: border-box;
+			}
+
+			td img {
+				max-width: 100%;
+				height: auto;
+			}
 		</style>
 	</head>
 	<body>
@@ -59,7 +75,7 @@
 			computes one level of the algorithm.
 		</p>
 		<p>Starting with six control points, I applied de Casteljau's algorithm one level at a time. Each level takes a linear interpolation between every pair of adjacent ponits, so the number of points decreases from 6 to 5, then 4, 3, 2, and finally 1.</p>
-		<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 90%; margin: 0 auto;">
+		<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 0 auto;">
 			<figure style="margin: 0; text-align: center;">
 				<img src="assets/level0.png" style="width: 100%; max-width: 400px;"/>
 				<figcaption>Level 0: Original control points</figcaption>
@@ -114,21 +130,33 @@
 
 		<h3>Part 3: Area-weighted vertex normals</h3>
 		<p>I implemented the vertex normals by walking through all of the faces surrounding each vertex. For each face, I used the two edges starting at the vertex and took their cross product to get the face normal. Since the magnitude of the cross product is proportional to the area of the triangle, larger faces contribute more to the final normal. I added these contributions together and normalized the result to get the vertex normal.</p>
-		<table style="width: 80%; margin: 0 auto; text-align: center; border-collapse: collapse;">
+		<table style="margin: 0 auto; text-align: center; border-collapse: collapse;">
 			<tr>
-				<td>
-					<img src="assets/teapot_flat.png" width="400px"/>
+				<td style="vertical-align: top;">
+					<img src="assets/teapot_flat.png" width="280px"/>
 					<figcaption>Teapot with default flat shading.</figcaption>
 				</td>
-				<td>
-					<img src="assets/teapot_smooth.png" width="400px"/>
+				<td style="vertical-align: top;">
+					<img src="assets/teapot_smooth.png" width="280px"/>
 					<figcaption>Teapot with Phong shading using vertex normals.</figcaption>
 				</td>
 			</tr>
 		</table>
 
 		<h3>Part 4: Edge flip</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>I implemented edge flipping by first finding the six half-edges surrounding the two faces adjacent to the selected edge. The two half-edges of the selected edge are twins, and I used <code>next()</code> to find the other half-edges belonging to each face. I then changed the selected edge's endpoints to the two opposite vertices, replacing the original diagonal with the other diagonal of the quadrilateral. Finally, I updated the <code>next()</code> pointers and face pointers so that the six half-edges form the two new triangular faces. I also check whether the selected edge is a boundary edge and leave it unchanged if so.</p>
+		<table style="margin: 0 auto; text-align: center; border-collapse: collapse;">
+			<tr>
+				<td style="vertical-align: top;">
+					<img src="assets/teapot_before_flip.png" width="280px"/>
+					<figcaption>Teapot before edge flips.</figcaption>
+				</td>
+				<td style="vertical-align: top;">
+					<img src="assets/teapot_after_flip.png" width="280px"/>
+					<figcaption>Teapot after several edge flips.</figcaption>
+				</td>
+			</tr>
+		</table>
 
 		<h3>Part 5: Edge split</h3>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
