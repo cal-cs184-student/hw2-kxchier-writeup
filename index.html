@@ -59,7 +59,7 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		<p>In this homework, I worked with Bezier curves and surfaces and implemented several operations for triangle meshes using the half-edge data structure. I implemented de Casteljau's algorithm, area-weighted vertex normals, edge flips, edge splits, and Loop subdivision. A lot of work involved keeping track of how the half-edges, vertices, edges, and faces were connected, especially when changing the mesh topology. I found that drawing out the half-edge structure by hand was especially useful when debugging pointer-related problems. Loop subdivision also gave me a better sense of how the connectivity of a mesh affects the shape produced by repeated subdivision. :></p>
 
 		<h2>Section I: Bezier Curves and Surfaces</h2>
 
@@ -74,7 +74,7 @@
 			vector and return it. Each call to <code>evaluateStep()</code> only
 			computes one level of the algorithm.
 		</p>
-		<p>Starting with six control points, I applied de Casteljau's algorithm one level at a time. Each level takes a linear interpolation between every pair of adjacent ponits, so the number of points decreases from 6 to 5, then 4, 3, 2, and finally 1.</p>
+		<p>Starting with six control points, I applied de Casteljau's algorithm one level at a time. Each level takes a linear interpolation between every pair of adjacent points, so the number of points decreases from 6 to 5, then 4, 3, 2, and finally 1.</p>
 		<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 0 auto;">
 			<figure style="margin: 0; text-align: center;">
 				<img src="assets/level0.png" style="width: 100%; max-width: 400px;"/>
@@ -123,7 +123,7 @@
 		<p>I used the same <code>evaluateStep()</code> idea from Part 1, but with 3D points. I used linear interpolation on each pair of neighboring points and repeated the process in <code>evaluated1D()</code> until there was only one point left. For <code>evaluate()</code>, I first evaluated each row using <i>u</i>, then used those resulting points to evaluate the surface using <i>v</i>.</p>
 		<figure>
 			<img src="assets/part2_teapot.png" style="width: 70%"/>
-			<figcaption>Teapot evaluated using separable 1D de Casteljau.</figcaption>
+			<figcaption><code>bez/teapot.bez</code> evaluated using separable 1D de Casteljau.</figcaption>
 		</figure>
 
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
@@ -134,11 +134,11 @@
 			<tr>
 				<td style="vertical-align: top;">
 					<img src="assets/teapot_flat.png" width="280px"/>
-					<figcaption>Teapot with default flat shading.</figcaption>
+					<figcaption><code>bez/teapot.dae</code> with default flat shading.</figcaption>
 				</td>
 				<td style="vertical-align: top;">
 					<img src="assets/teapot_smooth.png" width="280px"/>
-					<figcaption>Teapot with Phong shading using vertex normals.</figcaption>
+					<figcaption><code>bez/teapot.dae</code> with Phong shading using vertex normals.</figcaption>
 				</td>
 			</tr>
 		</table>
@@ -157,11 +157,11 @@
 				</td>
 			</tr>
 		</table>
-		<p>During my implementation and debugging journey, the half-edge pointers became "pointer soup" and my first attempt at the edge flip caused a hole to appear in the mesh. To debug, I ended up drawing the two triangles and all six half-edges out on a piece of paper and tracing their directions. This helped me realize that some of my <code>next()</code> pointers were connected the wrong half-edges and that I as getting one of the opposite vertices from the wrong half-edge.</p>
+		<p>During my implementation and debugging journey, the half-edge pointers became "pointer soup" and my first attempt at the edge flip caused a hole to appear in the mesh. To debug, I ended up drawing the two triangles and all six half-edges out on a piece of paper and tracing their directions. This helped me realize that some of my <code>next()</code> pointers were connected the wrong half-edges and that I was getting one of the opposite vertices from the wrong half-edge.</p>
 
 		<h3>Part 5: Edge split</h3>
-		<p>I implemented the edge split by first finding the six half-edges and tow faces surrounding the edge being split. I also saved the four vertices around the edge so I could identify the two vertices on either side of the edge. I then created a new vertex at the midpoint of the original edge. Since the split turns the original two triangles into four triangles, I created three new edges, six new half-edges, and two new faces. The original edge is reused as one of the new edges rather than creating an extra edge that is no longer needed.</p>
-		<p>After creating these elements, I set up their twin and vertex pointers and rearranged the <code>next()</code> pointers to form the four new triangular faces. I also updated the face pointers and made sure that the new vertex and edges points to the appropriate half-edges. For the new vertex, I specifically set its half-edge to point along the original edge. I return the new vertex after the split is complete.</p>
+		<p>I implemented the edge split by first finding the six half-edges and two faces surrounding the edge being split. I also saved the four vertices around the edge so I could identify the two vertices on either side of the edge. I then created a new vertex at the midpoint of the original edge. Since the split turns the original two triangles into four triangles, I created three new edges, six new half-edges, and two new faces. The original edge is reused as one of the new edges rather than creating an extra edge that is no longer needed.</p>
+		<p>After creating these elements, I set up their twin and vertex pointers and rearranged the <code>next()</code> pointers to form the four new triangular faces. I also updated the face pointers and made sure that the new vertex and edges point to the appropriate half-edges. For the new vertex, I specifically set its half-edge to point along the original edge. I return the new vertex after the split is complete.</p>
 		<p>The hardest part was keeping track of all the new pointers in a messy pointer soup! I drew the original two triangles and the four triangles after the split on a piece of paper and labeled all of the half-edges with their directions. I could then trace around each triangle and figure out which <code>next()</code> pointers should connect. :3</p>
 		<table style="margin: 0 auto; text-align: center; border-collapse: collapse;">
 			<tr>
@@ -192,7 +192,7 @@
 		<p>I implemented Loop subdivision in five steps. First, I computed new positions for all of the original vertices using the Loop subdivision weighting rule and stored them in <code>newPosition</code>. For each vertex, I found its neighboring vertices and used their positions to compute the weighted average. I also marked these vertices as old using <code>isNew</code>.</p>
 		<p>Next, I computed the positions of the new vertices that would be created along each edge. I used the two endpoints of the edge and the two opposite vertices from the neighboring triangles, with the Loop subdivision weights, and stored the result in <code>Edge::newPosition</code>.</p>
 		<p>Before splitting the edges, I saved all of the original edges in a separate vector. This was important because splitting an edge creates new edges, and I didn't want those new edges to be split again during the same subdivision. I then split each original edge, assigned the new vertex its precomputed position, and marked it as new. After splitting, I flipped any new edge that connected one old vertex and one new vertex. Finally, I copied each vertex's <code>newPosition</code> into its actual position.</p>
-		<p>When I was getting distorted meshes, I went back and checked the edge split and edge flip operations since Loop subdivision depends on both of them working correctly. I nitially marked an edge that was actually one half of an original edge as new, which caused it to be flipped during the next step. This changed the mesh connectivity in places where it shouldn't have, which caused the distorted result I was getting.</p>
+		<p>When I was getting distorted meshes, I went back and checked the edge split and edge flip operations since Loop subdivision depends on both of them working correctly. I initially marked an edge that was actually one half of an original edge as new, which caused it to be flipped during the next step. This changed the mesh connectivity in places where it shouldn't have, which caused the distorted result I was getting.</p>
 		<p>After applying Loop subdivision, I noticed that the mesh becomes noticeably smoother with each iteration. In particular, the sharp corners and edges of the cube start to become rounded, so after several iterations it looks much more like a rounded shape than a cube. :D</p>
 		<table style="margin: 0 auto; text-align: center; border-collapse: collapse;">
 			<tr>
@@ -219,7 +219,7 @@
 				</td>
 			</tr>
 		</table>
-		<p>After several iterations, I noticed that the original cube can become slightly asymmetric even though the starting cube is symmetric. This happens because the cube is initially represented as triangles, and the way the faces are split into triangles gives different vertices different local connectivity. Loop subdivision uses this connectivity when computing new vertex positions, so these differences can become more noticeable after repeated subdivision. In the screenshots above, you can see that pre-processing the cube by splitting edges more symmetrically helped reduce this effect and made the subdivided cube more symmetric.</p>
+		<p>After several iterations, I noticed that the original cube can become slightly asymmetric even though the starting shape is symmetric. This happens because the cube is initially represented as triangles, and the way the faces are split into triangles gives different vertices different local connectivity. Loop subdivision uses this connectivity when computing new vertex positions, so these differences can become more noticeable after repeated subdivision. I also experimented with flipping edges, but found that pre-splitting the original edges gave me a more symmetric result. As shown in the screenshots, the pre-split cube stays more symmetric after repeated subdivision than the original cube. Adding more evenly distributed edges gave the subdivision more uniform connectivity around the faces, which helped preserve the symmetry of the original cube.</p>
 		</div>
 	</body>
 </html>
