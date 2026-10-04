@@ -160,12 +160,35 @@
 		<p>During my implementation and debugging journey, the half-edge pointers became "pointer soup" and my first attempt at the edge flip caused a hole to appear in the mesh. To debug, I ended up drawing the two triangles and all six half-edges out on a piece of paper and tracing their directions. This helped me realize that some of my <code>next()</code> pointers were connected the wrong half-edges and that I as getting one of the opposite vertices from the wrong half-edge.</p>
 
 		<h3>Part 5: Edge split</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>I implemented the edge split by first finding the six half-edges and tow faces surrounding the edge being split. I also saved the four vertices around the edge so I could identify the two vertices on either side of the edge. I then created a new vertex at the midpoint of the original edge. Since the split turns the original two triangles into four triangles, I created three new edges, six new half-edges, and two new faces. The original edge is reused as one of the new edges rather than creating an extra edge that is no longer needed.</p>
+		<p>After creating these elements, I set up their twin and vertex pointers and rearranged the <code>next()</code> pointers to form the four new triangular faces. I also updated the face pointers and made sure that the new vertex and edges points to the appropriate half-edges. For the new vertex, I specifically set its half-edge to point along the original edge. I return the new vertex after the split is complete.</p>
+		<p>The hardest part was keeping track of all the new pointers in a messy pointer soup! I drew the original two triangles and the four triangles after the split on a piece of paper and labeled all of the half-edges with their directions. I could then trace around each triangle and figure out which <code>next()</code> pointers should connect. :3</p>
+		<table style="margin: 0 auto; text-align: center; border-collapse: collapse;">
+			<tr>
+				<td style="vertical-align: top;">
+					<img src="assets/sphere_before_split.png" width="280px"/>
+					<figcaption>Sphere before edge splits.</figcaption>
+				</td>
+				<td style="vertical-align: top;">
+					<img src="assets/sphere_after_split.png" width="280px"/>
+					<figcaption>Sphere after several edge splits.</figcaption>
+				</td>
+			</tr>
+		</table>
+		<table style="margin: 0 auto; text-align: center; border-collapse: collapse;">
+			<tr>
+				<td style="vertical-align: top;">
+					<img src="assets/teapot_before_split_flip.png" width="280px"/>
+					<figcaption>Teapot before edge splits and flips.</figcaption>
+				</td>
+				<td style="vertical-align: top;">
+					<img src="assets/teapot_after_split_flip.png" width="280px"/>
+					<figcaption>Teapot after a combination of edge splits and flips.</figcaption>
+				</td>
+			</tr>
+		</table>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 		</div>
 	</body>
