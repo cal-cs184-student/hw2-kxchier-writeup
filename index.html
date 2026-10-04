@@ -189,7 +189,37 @@
 		</table>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>I implemented Loop subdivision in five steps. First, I computed new positions for all of the original vertices using the Loop subdivision weighting rule and stored them in <code>newPosition</code>. For each vertex, I found its neighboring vertices and used their positions to compute the weighted average. I also marked these vertices as old using <code>isNew</code>.</p>
+		<p>Next, I computed the positions of the new vertices that would be created along each edge. I used the two endpoints of the edge and the two opposite vertices from the neighboring triangles, with the Loop subdivision weights, and stored the result in <code>Edge::newPosition</code>.</p>
+		<p>Before splitting the edges, I saved all of the original edges in a separate vector. This was important because splitting an edge creates new edges, and I didn't want those new edges to be split again during the same subdivision. I then split each original edge, assigned the new vertex its precomputed position, and marked it as new. After splitting, I flipped any new edge that connected one old vertex and one new vertex. Finally, I copied each vertex's <code>newPosition</code> into its actual position.</p>
+		<p>When I was getting distorted meshes, I went back and checked the edge split and edge flip operations since Loop subdivision depends on both of them working correctly. I nitially marked an edge that was actually one half of an original edge as new, which caused it to be flipped during the next step. This changed the mesh connectivity in places where it shouldn't have, which caused the distorted result I was getting.</p>
+		<p>After applying Loop subdivision, I noticed that the mesh becomes noticeably smoother with each iteration. In particular, the sharp corners and edges of the cube start to become rounded, so after several iterations it looks much more like a rounded shape than a cube. :D</p>
+		<table style="margin: 0 auto; text-align: center; border-collapse: collapse;">
+			<tr>
+				<td style="vertical-align: top;">
+					<img src="assets/cube_before_subdivision.png" width="280px"/>
+					<figcaption>Cube before Loop subdivision.</figcaption>
+				</td>
+				<td style="vertical-align: top;">
+					<img src="assets/cube_after_subdivision.png" width="280px"/>
+					<figcaption>Cube after several iterations of Loop subdivision.</figcaption>
+				</td>
+			</tr>
+		</table>
+		<p>I also tried pre-splitting the edges of the cube before subdividing it. This added more geometry around the original edges and corners, which helped keep the shape more cube-like after subdivision.</p>
+		<table style="margin: 0 auto; text-align: center; border-collapse: collapse;">
+			<tr>
+				<td style="vertical-align: top;">
+					<img src="assets/cube_presplit.png" width="280px"/>
+					<figcaption>Cube after pre-splitting edges.</figcaption>
+				</td>
+				<td style="vertical-align: top;">
+					<img src="assets/cube_presplit_subdivision.png" width="280px"/>
+					<figcaption>Pre-split cube after several iterations of Loop subdivision.</figcaption>
+				</td>
+			</tr>
+		</table>
+		<p>After several iterations, I noticed that the original cube can become slightly asymmetric even though the starting cube is symmetric. This happens because the cube is initially represented as triangles, and the way the faces are split into triangles gives different vertices different local connectivity. Loop subdivision uses this connectivity when computing new vertex positions, so these differences can become more noticeable after repeated subdivision. In the screenshots above, you can see that pre-processing the cube by splitting edges more symmetrically helped reduce this effect and made the subdivided cube more symmetric.</p>
 		</div>
 	</body>
 </html>
